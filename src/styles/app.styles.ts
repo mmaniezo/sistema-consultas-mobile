@@ -24,12 +24,14 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
   },
   titulo: {
+    fontFamily: "OdibeeSans_400Regular",
     fontSize: 28,
     fontWeight: "bold",
     color: "#fff",
     marginBottom: 8,
   },
   subtitulo: {
+    fontFamily: "OdibeeSans_400Regular",
     fontSize: 18,
     color: "#fff",
     opacity: 0.9,
@@ -41,6 +43,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
   },
   rodapeTexto: {
+    fontFamily: "OdibeeSans_400Regular",
     fontSize: 12,
     color: "#fff",
     textAlign: "center",
