@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { Especialidade } from "../types/especialidade";
 import { Paciente } from "../types/paciente";
@@ -7,9 +7,13 @@ import { Medico } from "../interfaces/medico";
 import { Consulta } from "../interfaces/consulta";
 import { ConsultaCard } from "../components";
 import { styles } from "../styles/app.styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts, OdibeeSans_400Regular } from '@expo-google-fonts/odibee-sans';
 
 export default function App() {
+
+const STORAGE_KEY = "@consultas:consulta_atual";
+
 //Utilizando as classes criadas
 
 const cardiologia: Especialidade = {
@@ -35,15 +39,45 @@ const paciente1: Paciente = {
 };
 
 //Estado Tipado com useState
-const [consulta, setConsulta] = useState<Consulta>({
-  id: 1,
-  medico: medico1,
-  paciente: paciente1,
-  data: new Date(2026, 2, 10),
-  valor: 350,
-  status: "agendada",
-  observacoes: "Consulta de rotina",
-});
+const consultaInicial: Consulta = {
+    id: 1,
+    medico: medico1,
+    paciente: paciente1,
+    data: new Date(2026, 2, 10),
+    valor: 350,
+    status: "agendada",
+    observacoes: "Consulta de rotina",
+  };
+
+  const [consulta, setConsulta] = useState<Consulta>(consultaInicial);
+
+  useEffect(() => {
+    carregarConsulta();
+  }, []);
+
+  async function carregarConsulta() {
+    try {
+      const consultaSalva = await AsyncStorage.getItem(STORAGE_KEY);
+      if (consultaSalva) {
+        const consultaObjeto = JSON.parse(consultaSalva);
+        consultaObjeto.data = new Date(consultaObjeto.data);
+        setConsulta(consultaObjeto);
+      }
+    } catch (erro) {
+      console.error("Erro ao carregar consulta:", erro);
+    }
+  }
+
+  async function salvarConsulta(consultaAtualizada: Consulta) {
+    try {
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(consultaAtualizada)
+      );
+    } catch (erro) {
+      console.error("Erro ao salvar consulta:", erro);
+    }
+  }
 
   /**
    * Funções para manipular a consulta
@@ -54,17 +88,21 @@ const [consulta, setConsulta] = useState<Consulta>({
    */
 
 function confirmarConsulta() {
-  setConsulta({
-    ...consulta,
-    status: "confirmada",
-  });
-}
+    const consultaAtualizada = {
+      ...consulta,
+      status: "confirmada" as const,
+    };
+    setConsulta(consultaAtualizada);
+    salvarConsulta(consultaAtualizada);
+  }
 
   function cancelarConsulta() {
-    setConsulta({
+    const consultaAtualizada = {
       ...consulta,
-      status: "cancelada",
-    });
+      status: "cancelada" as const,
+    };
+    setConsulta(consultaAtualizada);
+    salvarConsulta(consultaAtualizada);
   }
 
 function formatarValor(valor: number): string {
