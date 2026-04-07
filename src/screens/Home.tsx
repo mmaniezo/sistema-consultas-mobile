@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, Button } from "react-native";
 import { Especialidade } from "../types/especialidade";
 import { Paciente } from "../types/paciente";
 import { Medico } from "../interfaces/medico";
@@ -8,116 +8,80 @@ import { Consulta } from "../interfaces/consulta";
 import { ConsultaCard } from "../components";
 import { styles } from "../styles/app.styles";
 import { useFonts, OdibeeSans_400Regular } from '@expo-google-fonts/odibee-sans';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// Importa funções do service layer
+import { obterConsultas, salvarConsultas } from "../services/storage";
 
-export default function App() {
-//Utilizando as classes criadas
+// Recebe navigation como prop (injetado pelo React Navigation)
+export default function Home({ navigation }: any) {
+  // Estado agora é um ARRAY de consultas
+  const [consultas, setConsultas] = useState<Consulta[]>([]);
 
-const cardiologia: Especialidade = {
-  id: 1,
-  nome: "Cardiologia",
-  descricao: "Cuidados com o coração",
-};
+  // Carrega dados ao montar o componente
+  useEffect(() => {
+    carregarConsultas();
+  }, []);
 
-const medico1: Medico = {
-  id: 1,
-  nome: "Dr. Roberto Silva",
-  crm: "CRM12345",
-  especialidade: cardiologia,
-  ativo: true,
-};
-
-const paciente1: Paciente = {
-  id: 1,
-  nome: "Carlos Andrade",
-  cpf: "123.456.789-00",
-  email: "carlos@email.com",
-  telefone: "(11) 98765-4321",
-};
-
-//Estado Tipado com useState
-const [consulta, setConsulta] = useState<Consulta>({
-  id: 1,
-  medico: medico1,
-  paciente: paciente1,
-  data: new Date(2026, 2, 10),
-  valor: 350,
-  status: "agendada",
-  observacoes: "Consulta de rotina",
-});
-
-  /**
-   * Funções para manipular a consulta
-   * 
-   * Essas funções serão passadas como props para o componente.
-   * O componente não altera o estado diretamente - ele apenas
-   * "comunica" ao pai (App) que uma ação foi solicitada.
-   */
-
-function confirmarConsulta() {
-  setConsulta({
-    ...consulta,
-    status: "confirmada",
-  });
-}
-
-  function cancelarConsulta() {
-    setConsulta({
-      ...consulta,
-      status: "cancelada",
-    });
+  // Função que busca consultas do AsyncStorage
+  async function carregarConsultas() {
+    const consultasSalvas = await obterConsultas();
+    setConsultas(consultasSalvas);
   }
 
-function formatarValor(valor: number): string {
-  return valor.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
-}
-
-function formatarData(data: Date): string {
-  return data.toLocaleDateString("pt-BR");
-}
-
-let [fontsLoaded] = useFonts({
-    OdibeeSans_400Regular,
-  });
-
-  // 3. Verificar se já carregou (evita erro de renderização)
-  if (!fontsLoaded) {
-    return null; 
+  // Atualiza status da consulta para "confirmada"
+  async function confirmarConsulta(consultaId: number) {
+    // map cria novo array com a consulta modificada
+    const consultasAtualizadas = consultas.map((c) =>
+      c.id === consultaId ? { ...c, status: "confirmada" as const } : c
+    );
+    setConsultas(consultasAtualizadas); // Atualiza estado local
+    await salvarConsultas(consultasAtualizadas); // Persiste no AsyncStorage
   }
 
+  // Atualiza status da consulta para "cancelada"
+  async function cancelarConsulta(consultaId: number) {
+    const consultasAtualizadas = consultas.map((c) =>
+      c.id === consultaId ? { ...c, status: "cancelada" as const } : c
+    );
+    setConsultas(consultasAtualizadas);
+    await salvarConsultas(consultasAtualizadas);
+  }
 
-return (
+  return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Cabeçalho */}
         <View style={styles.header}>
-          <Text style={styles.titulo}>Sistema de Consultas</Text>
-          <Text style={styles.subtitulo}>Consulta #{consulta.id}</Text>
+          <Text style={styles.titulo}>Minhas Consultas</Text>
+          <Text style={styles.subtitulo}>
+            {consultas.length} consulta(s) agendada(s)
+          </Text>
         </View>
 
-                {/* 
-          Componente ConsultaCard
-          
-          Veja como ficou mais simples!
-          Antes: ~100 linhas de JSX no App.tsx
-          Agora: 1 componente reutilizável
-          
-          Props:
-          - consulta: objeto com todos os dados
-          - onConfirmar: função a ser chamada ao confirmar
-          - onCancelar: função a ser chamada ao cancelar
-        */}
-        <ConsultaCard
-          consulta={consulta}
-          onConfirmar={confirmarConsulta}
-          onCancelar={cancelarConsulta}
-        />
-
+        {/* Renderização condicional: vazio ou lista */}
+        {consultas.length === 0 ? (
+          <View style={{ padding: 20, alignItems: "center" }}>
+            <Text style={{ color: "#666", marginBottom: 20 }}>
+              Nenhuma consulta agendada ainda
+            </Text>
+            {/* Botão para navegar para Admin */}
+            <Button
+              title="Ir para Admin"
+              onPress={() => navigation.navigate("Admin")}
+            />
+          </View>
+        ) : (
+          // map renderiza um componente para cada consulta
+          consultas.map((consulta) => (
+            <ConsultaCard
+              key={consulta.id}
+              consulta={consulta}
+              onConfirmar={() => confirmarConsulta(consulta.id)}
+              onCancelar={() => cancelarConsulta(consulta.id)}
+            />
+          ))
+        )}
       </ScrollView>
     </View>
-);
+  );
 }
