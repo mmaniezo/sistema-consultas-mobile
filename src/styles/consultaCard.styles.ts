@@ -26,10 +26,9 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F44336",
   },
   statusTexto: {
-    fontFamily: "OdibeeSans_400Regular",
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: 12,
   },
   secao: {
     marginBottom: 20,
@@ -38,26 +37,22 @@ export const styles = StyleSheet.create({
     borderBottomColor: "#e0e0e0",
   },
   label: {
-    fontFamily: "OdibeeSans_400Regular",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     color: "#79059C",
     marginBottom: 8,
   },
   valor: {
-    fontFamily: "OdibeeSans_400Regular",
     fontSize: 18,
     color: "#333",
     marginBottom: 4,
   },
   info: {
-    fontFamily: "OdibeeSans_400Regular",
     fontSize: 14,
     color: "#666",
     marginBottom: 2,
   },
   observacoes: {
-    fontFamily: "OdibeeSans_400Regular",
     fontSize: 14,
     color: "#555",
     fontStyle: "italic",
@@ -85,7 +80,6 @@ export const styles = StyleSheet.create({
   },
   mensagemTexto: {
     fontSize: 16,
-    fontFamily: "OdibeeSans_400Regular",
     color: "#333",
     fontWeight: "600",
     textAlign: "center",
