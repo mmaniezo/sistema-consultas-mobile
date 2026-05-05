@@ -3,7 +3,8 @@
  * Exibe consultas filtradas por usuário (paciente vê só suas, admin vê todas)
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
  View,
  Text,
@@ -32,13 +33,16 @@ export default function ConsultasListScreen({
  const [refreshing, setRefreshing] = useState(false);
  const [filtroAtivo, setFiltroAtivo] = useState<StatusConsulta | "todas">("todas");
 
- useEffect(() => {
+ useFocusEffect(
+ useCallback(() => {
  carregarConsultas();
- }, []);
+ }, [usuario?.id])
+ );
 
  async function carregarConsultas() {
  setLoading(true);
  try {
+ // Carrega consultas filtradas por usuário
  const dados = await consultasService.listarConsultas(
  usuario?.id,
  isAdmin()
@@ -109,7 +113,7 @@ export default function ConsultasListScreen({
  {/* Header com Info do Usuário */}
  <View style={styles.header}>
  <Text style={styles.headerTitle}>
- {isAdmin() ? "📋 Todas as Consultas" : "📋 Minhas Consultas"}
+ {isAdmin() ? "Todas as Consultas" : "Minhas Consultas"}
  </Text>
  <Text style={styles.headerSubtitle}>
  {consultasFiltradas.length} consulta(s) encontrada(s)
@@ -119,28 +123,52 @@ export default function ConsultasListScreen({
  {/* Filtros */}
  <View style={styles.filtros}>
  <TouchableOpacity
- style={[styles.filtro, filtroAtivo === "todas" && styles.filtroAtivo]}
+ style={[
+ styles.filtro,
+ filtroAtivo === "todas" && styles.filtroAtivo,
+ ]}
  onPress={() => setFiltroAtivo("todas")}
  >
- <Text style={[styles.filtroTexto, filtroAtivo === "todas" && styles.filtroTextoAtivo]}>
+ <Text
+ style={[
+ styles.filtroTexto,
+ filtroAtivo === "todas" && styles.filtroTextoAtivo,
+ ]}
+ >
  Todas
  </Text>
  </TouchableOpacity>
 
  <TouchableOpacity
- style={[styles.filtro, filtroAtivo === "agendada" && styles.filtroAtivo]}
+ style={[
+ styles.filtro,
+ filtroAtivo === "agendada" && styles.filtroAtivo,
+ ]}
  onPress={() => setFiltroAtivo("agendada")}
  >
- <Text style={[styles.filtroTexto, filtroAtivo === "agendada" && styles.filtroTextoAtivo]}>
+ <Text
+ style={[
+ styles.filtroTexto,
+ filtroAtivo === "agendada" && styles.filtroTextoAtivo,
+ ]}
+ >
  Agendadas
  </Text>
  </TouchableOpacity>
 
  <TouchableOpacity
- style={[styles.filtro, filtroAtivo === "confirmada" && styles.filtroAtivo]}
+ style={[
+ styles.filtro,
+ filtroAtivo === "confirmada" && styles.filtroAtivo,
+ ]}
  onPress={() => setFiltroAtivo("confirmada")}
  >
- <Text style={[styles.filtroTexto, filtroAtivo === "confirmada" && styles.filtroTextoAtivo]}>
+ <Text
+ style={[
+ styles.filtroTexto,
+ filtroAtivo === "confirmada" && styles.filtroTextoAtivo,
+ ]}
+ >
  Confirmadas
  </Text>
  </TouchableOpacity>
