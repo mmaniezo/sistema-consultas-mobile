@@ -48,6 +48,8 @@ export type Consulta = {
   horario: string;
   status: StatusConsulta;
   observacoes?: string;
+  prioridade?: boolean;
+  emergencia?: boolean;
 };
 
 // ===== TIPOS PARA FORMULÁRIOS =====
