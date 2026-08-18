@@ -5,6 +5,22 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#f5f5f5",
     },
+    header: {
+        backgroundColor: "#fff",
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: "#e0e0e0",
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: "#333",
+        marginBottom: 4,
+    },
+    headerSubtitle: {
+        fontSize: 14,
+        color: "#666",
+    },
     filtros: {
         flexDirection: "row",
         padding: 16,
@@ -17,20 +33,23 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 20,
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f5f5f5",
+        borderWidth: 1,
+        borderColor: "#e0e0e0",
     },
     filtroAtivo: {
         backgroundColor: "#79059C",
+        borderColor: "#79059C",
     },
     filtroTexto: {
-        fontSize: 14,
         color: "#666",
-        fontWeight: "600",
+        fontSize: 14,
+        fontWeight: "500",
     },
     filtroTextoAtivo: {
         color: "#fff",
     },
-    emptyContainer: {
-        flex: 1,
+    lista: {
+        padding: 16,
     },
-})
+});

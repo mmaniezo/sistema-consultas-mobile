@@ -5,7 +5,7 @@
  */
 
 // Preparado para uso futuro do AsyncStorage
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * Service para gerenciar armazenamento local
@@ -17,9 +17,8 @@ class StorageService {
   async setItem(key: string, value: any): Promise<void> {
     try {
       const jsonValue = JSON.stringify(value);
-      // await AsyncStorage.setItem(key, jsonValue);
+      await AsyncStorage.setItem(key, jsonValue);
       console.log(`[Storage] Salvando ${key}:`, value);
-      // Por enquanto, apenas simula
     } catch (error) {
       console.error("Erro ao salvar no storage:", error);
       throw error;
@@ -31,10 +30,9 @@ class StorageService {
    */
   async getItem<T>(key: string): Promise<T | null> {
     try {
-      // const jsonValue = await AsyncStorage.getItem(key);
-      // return jsonValue != null ? JSON.parse(jsonValue) : null;
+      const jsonValue = await AsyncStorage.getItem(key);
       console.log(`[Storage] Carregando ${key}`);
-      return null; // Por enquanto retorna null
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (error) {
       console.error("Erro ao ler do storage:", error);
       throw error;
@@ -46,7 +44,7 @@ class StorageService {
    */
   async removeItem(key: string): Promise<void> {
     try {
-      // await AsyncStorage.removeItem(key);
+      await AsyncStorage.removeItem(key);
       console.log(`[Storage] Removendo ${key}`);
     } catch (error) {
       console.error("Erro ao remover do storage:", error);
@@ -59,7 +57,7 @@ class StorageService {
    */
   async clear(): Promise<void> {
     try {
-      // await AsyncStorage.clear();
+      await AsyncStorage.clear();
       console.log("[Storage] Limpando tudo");
     } catch (error) {
       console.error("Erro ao limpar storage:", error);
@@ -72,9 +70,9 @@ class StorageService {
    */
   async getAllKeys(): Promise<string[]> {
     try {
-      // return await AsyncStorage.getAllKeys();
+      const keys = await AsyncStorage.getAllKeys();
       console.log("[Storage] Listando chaves");
-      return [];
+      return Array.isArray(keys) ? [...keys] : [];
     } catch (error) {
       console.error("Erro ao listar chaves:", error);
       throw error;
