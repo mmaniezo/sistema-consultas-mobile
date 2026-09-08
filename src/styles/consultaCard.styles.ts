@@ -1,7 +1,11 @@
 import { StyleSheet } from "react-native";
 
+/**
+ * Estilos do componente ConsultaCard
+ * Separados da logica para facilitar manutencao e reuso
+ */
+
 export const styles = StyleSheet.create({
-  // ✅ DEPOIS (nova sintaxe boxShadow - Expo SDK 52+)
   card: {
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -11,12 +15,29 @@ export const styles = StyleSheet.create({
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
     elevation: 3,
   },
+  cardEmergencia: {
+    borderWidth: 2,
+    borderColor: "#B71C1C",
+    backgroundColor: "#FFF5F5",
+  },
+  badgesRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 12,
+  },
   statusBadge: {
     alignSelf: "flex-start",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    marginBottom: 12,
+  },
+  emergenciaBadge: {
+    alignSelf: "flex-start",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: "#B71C1C",
   },
   statusTexto: {
     color: "#fff",
