@@ -1,4 +1,10 @@
 import { StyleSheet } from "react-native";
+
+/**
+ * Estilos da tela Login
+ * Separados da logica para facilitar manutencao e reuso
+ */
+
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
